@@ -2,6 +2,7 @@ beautifulsoup4==4.13.4
 certifi==2025.7.14
 chardet==3.0.4
 charset-normalizer==3.4.2
+deep-translator==1.11.4
 googletrans==4.0.0rc1
 h11==0.9.0
 h2==3.2.0
@@ -11,6 +12,7 @@ httpcore==0.9.1
 httpx==0.13.3
 hyperframe==5.2.0
 idna==2.10
+psutil==7.0.0
 pypresence==4.3.0
 python-dotenv==1.1.1
 pywin32==311

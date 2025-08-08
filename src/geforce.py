@@ -1,5 +1,7 @@
 import time
 import win32gui
+import win32process
+import psutil
 import requests
 import re
 import json
@@ -144,21 +146,37 @@ class AdvancedGeForcePresence:
             hwnds = []
             win32gui.EnumWindows(lambda h, p: p.append(h) if win32gui.IsWindowVisible(h) else None, hwnds)
             for hwnd in hwnds:
+                try:
+                    _, pid = win32process.GetWindowThreadProcessId(hwnd)
+                    exe_name = psutil.Process(pid).name()
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    continue
+
+                # ✅ Solo continuar si es el proceso oficial de GeForce NOW
+                if exe_name.lower() != "geforcenow.exe":
+                    continue
+
                 title = win32gui.GetWindowText(hwnd)
-                if 'GeForce NOW' in title:
-                    match = re.search(r"(.*?)(?:\s*(?:en|on|via|-)?\s*GeForce\s*NOW|®|™|©|\s*$)", title, re.IGNORECASE)
-                    if not match:
-                        continue
-                    raw_name = match.group(1).strip()
-                    clean_name = re.sub(r'[®™©]', '', raw_name).strip()
-                    for game_name, info in self.game_mapping.items():
-                        if clean_name.lower() == game_name.lower() or game_name.lower() in clean_name.lower():
-                            return info
-                    return {'name': raw_name, 'image': 'geforce_default', 'client_id': CLIENT_ID}
+                match = re.search(r"(.*?)(?:\s*(?:en|on|via|-)?\s*GeForce\s*NOW|®|™|©|\s*$)", title, re.IGNORECASE)
+                if not match:
+                    continue
+
+                raw_name = match.group(1).strip()
+                clean_name = re.sub(r'[®™©]', '', raw_name).strip()
+
+                # Buscar coincidencia en el archivo de configuración
+                for game_name, info in self.game_mapping.items():
+                    if clean_name.lower() == game_name.lower() or game_name.lower() in clean_name.lower():
+                        return info
+
+                # Si no está en config.json, devolver datos básicos
+                return {'name': raw_name, 'image': 'geforce_default', 'client_id': CLIENT_ID}
+
             return None
         except Exception as e:
             print(f"⚠️ Error detectando juego: {e}")
             return None
+
 
     def update_presence(self, game_info):
         if game_info:
@@ -191,11 +209,11 @@ class AdvancedGeForcePresence:
                 status = scraped
 
         has_custom_client = game_info.get("client_id") and game_info.get("client_id") != CLIENT_ID
-        print(game_info.get('client_id', 'N/A'))
+        
         #print("📦 game_info recibido:", game_info) 
 
         if has_custom_client:
-            print(f"🔄 Usando client_id personalizado: {game_info['client_id']}")
+            print(f"🔄 Usando juego personalizado: {game_info['client_id']}")
         else:
             print(f"🔄 Usando client_id por defecto para: {game_info['name']}")
         details, state = None, None
