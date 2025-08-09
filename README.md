@@ -53,7 +53,7 @@ STEAM_COOKIE=your_steamLoginSecure_cookie
 CONFIG_PATH_FILE=config_path.txt
 ```
 
-### 5. Add your `games_config.json`
+### 5. Add your `games_config.json` (You can also use my own file `config/games_config.json`)
 Example:
 ```json
 {
