@@ -152,7 +152,6 @@ class AdvancedGeForcePresence:
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
                     continue
 
-                # ✅ Solo continuar si es el proceso oficial de GeForce NOW
                 if exe_name.lower() != "geforcenow.exe":
                     continue
 
@@ -164,19 +163,16 @@ class AdvancedGeForcePresence:
                 raw_name = match.group(1).strip()
                 clean_name = re.sub(r'[®™©]', '', raw_name).strip()
 
-                # Buscar coincidencia en el archivo de configuración
                 for game_name, info in self.game_mapping.items():
                     if clean_name.lower() == game_name.lower() or game_name.lower() in clean_name.lower():
                         return info
 
-                # Si no está en config.json, devolver datos básicos
                 return {'name': raw_name, 'image': 'geforce_default', 'client_id': CLIENT_ID}
 
             return None
         except Exception as e:
             print(f"⚠️ Error detectando juego: {e}")
             return None
-
 
     def update_presence(self, game_info):
         if game_info:
