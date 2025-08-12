@@ -59,10 +59,8 @@ Example:
 {
   "Apex Legends": {
     "name": "Apex Legends",
-    "image": "apex_legends",
     "client_id": "123456789012345678",
     "steam_appid": "1172470",
-    "icon_key": "origin"
   }
 }
 ```
