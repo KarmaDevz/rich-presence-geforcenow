@@ -29,7 +29,7 @@ A **custom Discord Rich Presence** tool that shows the game you are running on *
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/YOUR-USERNAME/discord-rich-presence-geforcenow.git
+git clone https://github.com/KarmaDevz/discord-rich-presence-geforcenow.git
 cd discord-rich-presence-geforcenow
 ```
 
